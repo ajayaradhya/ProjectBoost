@@ -55,10 +55,15 @@ public class Rocket : MonoBehaviour {
         {
             audioSource.Stop();
         }
+
+        if (Input.GetKey(KeyCode.S))
+        {
+            rigidBody.AddRelativeForce(- Vector3.up * mainThrust / 2);
+        }
     }
 
     void OnCollisionEnter(Collision collider)
     {
-        print("collided");
+        
     }
 }
