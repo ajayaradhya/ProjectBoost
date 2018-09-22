@@ -7,6 +7,9 @@ public class Rocket : MonoBehaviour {
 
     [SerializeField] float mainThrust = 30f;
     [SerializeField] float rcsThrust = 250f;
+    [SerializeField] AudioClip explosionAudio;
+    [SerializeField] AudioClip thrustAudio;
+    [SerializeField] AudioClip transpondingAudio;
 
     private Rigidbody rigidBody;
     private AudioSource audioSource;
@@ -59,17 +62,12 @@ public class Rocket : MonoBehaviour {
             rigidBody.AddRelativeForce(Vector3.up * mainThrust);
             if (!audioSource.isPlaying)
             {
-                audioSource.Play();
+                audioSource.PlayOneShot(thrustAudio);
             }
         }
         else
         {
             audioSource.Stop();
-        }
-
-        if (Input.GetKey(KeyCode.S))
-        {
-            rigidBody.AddRelativeForce(- Vector3.up * mainThrust / 2);
         }
     }
 
@@ -83,16 +81,30 @@ public class Rocket : MonoBehaviour {
         switch(collider.gameObject.tag)
         {
             case "Finish":
-                state = State.Transcending;
-                Invoke("LoadTheNextLevel", 1f);
+                StartSuccessSequence();
                 break;
             case "Respawn":
                 break;
             default:
-                state = State.Dying;
-                Invoke("LoadFirstLevel", 1f);
+                StartDeathSequence();
                 break;
         }
+    }
+
+    private void StartDeathSequence()
+    {
+        state = State.Dying;
+        audioSource.Stop();
+        audioSource.PlayOneShot(explosionAudio);
+        Invoke("LoadFirstLevel", 1f);
+    }
+
+    private void StartSuccessSequence()
+    {
+        state = State.Transcending;
+        audioSource.Stop();
+        audioSource.PlayOneShot(transpondingAudio);
+        Invoke("LoadTheNextLevel", 1f);
     }
 
     private void LoadFirstLevel()
