@@ -112,7 +112,8 @@ public class Rocket : MonoBehaviour {
         successParticles.Play();
         audioSource.Stop();
         audioSource.PlayOneShot(transpondingAudio);
-        Invoke("LoadTheNextLevel", 1f);
+        //Invoke("LoadTheNextLevel", 1f);
+        LevelController.Instance.LoadNextLevel();
     }
 
     private void LoadFirstLevel()
